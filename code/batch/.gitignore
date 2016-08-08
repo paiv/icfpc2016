@@ -1,0 +1,8 @@
+.env/
+.apikey
+failed/
+problems-rounded/
+results/
+tempbatch*.log
+temp-*
+solve*
