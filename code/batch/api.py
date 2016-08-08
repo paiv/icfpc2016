@@ -24,16 +24,27 @@ class Problem:
 
   def to_svg(self):
     def frac(f):
-      x = f if isinstance(f, float) else f[0] / f[1]
+      x = f if isinstance(f, (float, int)) else f[0] / f[1]
       return (x + 1) * 200
-    def poly(p, color = 'magenta', width = 2):
-      return svg.polygon([(frac(x), frac(y)) for (x,y) in p], stroke=color, stroke_width=width, fill='white')
-    def line(l, color = 'green'):
-      return svg.line(start=(frac(l[0][0]), frac(l[0][1])), end=(frac(l[1][0]), frac(l[1][1])), stroke=color, stroke_width=1)
+    def sz(f):
+      x = f if isinstance(f, (float, int)) else f[0] / f[1]
+      return x * 200
 
-    svg = svgwrite.Drawing()
+    def rect(start, size):
+      return svg.rect(insert=(frac(start[0]), frac(start[1])), size=(sz(size[0]), sz(size[1])) )
+    def poly(p):
+      return svg.polygon([(frac(x), frac(y)) for (x,y) in p])
+    def line(l):
+      return svg.line(start=(frac(l[0][0]), frac(l[0][1])), end=(frac(l[1][0]), frac(l[1][1])))
+
+    svg = svgwrite.Drawing(size=(600,600), viewBox=('0 0 600 600'))
+    svg.defs.add(svg.style("""
+    rect { stroke: lightgray; stroke-width: 1; fill: white; }
+    polygon { stroke: magenta; stroke-width: 2; fill: white; }
+    line { stroke: green; stroke-width: 1; }
+    """))
     group = svg.add(svg.g())
-    group.add(poly([((0,1),(0,1)),((1,1),(0,1)),((1,1),(1,1)),((0,1),(1,1))], color='lightgray', width=1))
+    group.add( rect((0,0), (1,1)) )
     for p in self.figure:
       group.add(poly(p))
     for l in self.skeleton:
@@ -265,7 +276,7 @@ class Solution:
       c = x * 256
       return 'rgb(%d,%d,%d)' % (c,c,c)
 
-    svg = svgwrite.Drawing()
+    svg = svgwrite.Drawing(size=(600,600), viewBox=('0 0 600 600'))
     group = svg.add(svg.g())
     group.add(poly([((0,1),(0,1)),((1,1),(0,1)),((1,1),(1,1)),((0,1),(1,1))], color='lightgray', width=1))
     for i,p in enumerate(self.vertices):
@@ -297,7 +308,8 @@ class ApiError(Exception):
 
 class ApiClient:
 
-    api_endpoint = 'http://2016sv.icfpcontest.org/api'
+    # api_endpoint = 'http://2016sv.icfpcontest.org/api'
+    api_endpoint = 'http://130.211.240.134/api'
     api_key = os.environ['API_KEY']
 
     timestamp = None
