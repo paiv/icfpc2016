@@ -20,3 +20,11 @@ Implementation
 
 * C/C++ – solver
 * Python – processing, batching
+
+
+Results
+-------
+
+rank 106
+
+<img src="notes/standing.png" alt="screenshot" width="575" height="50" />
